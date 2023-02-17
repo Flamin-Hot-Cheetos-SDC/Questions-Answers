@@ -1,11 +1,20 @@
 const mongoose = require('mongoose');
 
 const questionSchema = mongoose.Schema({
-  product_id: Number,
-  _id: Number,
+  product_id: {
+    type: Number,
+    required: true
+  },
+  id: {
+    type: Number,
+    unique: true,
+    required: true
+  },
   body: {
     type: String,
     required: true,
+    minlength: 2,
+    maxlength: 1000,
   },
   date: {
     type: Date,
@@ -13,14 +22,18 @@ const questionSchema = mongoose.Schema({
   },
   username: {
     type: String,
+    minlength: 2,
+    maxlength: 60,
     required: true,
   },
   email: {
     type: String,
+    minlength: 2,
+    maxlength: 60,
     required: true,
   },
-  helpfulness: Number,
-  reported: Boolean,
+  helpfulness: { type: Number, default: 0 },
+  reported: { type: Boolean, default: false },
   answers: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -30,11 +43,20 @@ const questionSchema = mongoose.Schema({
 });
 
 const answerSchema = mongoose.Schema({
-  _id: Number,
-  question_id: Number,
+  id: {
+    type: Number,
+    unique: true,
+    required: true
+  },
+  question_id: {
+    type: Number,
+    required: true,
+  },
   body: {
     type: String,
     required: true,
+    minlength: 2,
+    maxlength: 1000,
   },
   date: {
     type: Date,
@@ -42,11 +64,18 @@ const answerSchema = mongoose.Schema({
   },
   username: {
     type: String,
+    minlength: 2,
+    maxlength: 60,
     required: true,
   },
-  email: String,
-  helpfulness: Number,
-  reported: Boolean,
+  email: {
+    type: String,
+    minlength: 2,
+    maxlength: 60,
+    required: true,
+  },
+  helpfulness: { type: Number, default: 0 },
+  reported: { type: Boolean, default: false },
   photos: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -56,9 +85,17 @@ const answerSchema = mongoose.Schema({
 });
 
 const photoSchema = mongoose.Schema({
-  answer_id: Number,
-  _id: Number,
-  url: String,
+  answer_id: { type: Number, required: true },
+  id: {
+    type: Number,
+    unique: true,
+    required: true
+  },
+  url: {
+    type: String,
+    default: null,
+    maxlength: 2048,
+  },
 });
 
 const Question = mongoose.model('Question', questionSchema);
