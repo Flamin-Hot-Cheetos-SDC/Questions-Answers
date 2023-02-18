@@ -5,22 +5,22 @@ const questionSchema = mongoose.Schema({
     type: Number,
     required: true
   },
-  id: {
+  question_id: {
     type: Number,
     unique: true,
     required: true
   },
-  body: {
+  question_body: {
     type: String,
     required: true,
     minlength: 2,
     maxlength: 1000,
   },
-  date: {
+  question_date: {
     type: Date,
     default: Date.now,
   },
-  username: {
+  asker_name: {
     type: String,
     minlength: 2,
     maxlength: 60,
@@ -43,7 +43,7 @@ const questionSchema = mongoose.Schema({
 });
 
 const answerSchema = mongoose.Schema({
-  id: {
+  answer_id: {
     type: Number,
     unique: true,
     required: true
@@ -62,7 +62,7 @@ const answerSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  username: {
+  answerer_name: {
     type: String,
     minlength: 2,
     maxlength: 60,
@@ -78,30 +78,22 @@ const answerSchema = mongoose.Schema({
   reported: { type: Boolean, default: false },
   photos: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Photo',
+      id: {
+        type: Number,
+        unique: true,
+      },
+      url: {
+        type: String,
+        default: null,
+        maxlength: 2048,
+      },
     },
   ],
 });
 
-const photoSchema = mongoose.Schema({
-  answer_id: { type: Number, required: true },
-  id: {
-    type: Number,
-    unique: true,
-    required: true
-  },
-  url: {
-    type: String,
-    default: null,
-    maxlength: 2048,
-  },
-});
-
 const Question = mongoose.model('Question', questionSchema);
 const Answer = mongoose.model('Answer', answerSchema);
-const Photo = mongoose.model('Photo', photoSchema);
 
 module.exports = {
-  Question, Answer, Photo,
+  Question, Answer,
 };
