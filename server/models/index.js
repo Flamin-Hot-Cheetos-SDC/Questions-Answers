@@ -16,8 +16,8 @@ module.exports = {
       email: email,
     });
   },
-  getAllAnswers: (params) => {
-    return Answers.find({ product_id: pid, reported: false})
+  getAllAnswers: ({ question_id }) => {
+    return Answer.find({ question_id: question_id, reported: false})
       .sort({ helpfulness: 'desc' })
       .limit(count);
   },
@@ -29,17 +29,18 @@ module.exports = {
       email: email,
       photos: photos,
     });
+    //also need to add ref to that answer into corresponding question?
   },
-  updateQuestionHelpfulness: (params) => {
-
+  updateQuestionHelpfulness: ({ question_id }) => {
+    return Question.findOneAndUpdate({ question_id: question_id } , {$inc: { 'helpfullness' : 1}});
   },
-  reportQuestion: (params) => {
-
+  reportQuestion: ({ question_id }) => {
+    return Question.findOneAndUpdate({ question_id: question_id } , {'report' : true });
   },
-  updateAnswerHelpfulness: (params) => {
-
+  updateAnswerHelpfulness: ({ answer_id }) => {
+    return Answer.findOneAndUpdate({ answer_id: answer_id } , {$inc: { 'helpfullness' : 1}});
   },
-  reportAnswer: (params) => {
-
+  reportAnswer: ({ answer_id }) => {
+    return Answer.findOneAndUpdate({ answer_id: answer_id } , {'report' : true });
   },
 };
