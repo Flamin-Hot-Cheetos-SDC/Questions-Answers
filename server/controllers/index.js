@@ -2,27 +2,30 @@ const models = require('../models');
 
 module.exports = {
   getAllQuestions: (req, res) => {
-    console.log('inside controllers', req.query);
+    console.log('inside controllers getAllQuestions', req.query);
     const pid = req.query.product_id;
     const count = req.query.count || 5;
     const page = req.query.page || 1;
     models.getAllQuestions(pid, count, page)
-      .then((result) => res.status(200).send(result))
+      .then((result) => res.status(200).send(result[0]))
       .catch((err) => res.status(500).send('Cannot get all the questions'));
   },
 
   postQuestion: (req, res) => {
     models.postQuestion(req.body)
       .then((result) => res.status(201).send('Question added'))
-      .catch((err) => res.status(500).send('Cannot add the question'));
+      .catch((err) => {
+        console.log('err ', err);
+        res.status(500).send('Cannot add the question')
+      });
   },
   getAllAnswers: (req, res) => {
-    console.log('inside controllers', req.query);
-    const question_id = req.body.question_id;
+    console.log('inside controllers getAllAnswers', req.params);
+    const question_id = req.params.question_id;
     const count = req.query.count || 5;
     const page = req.query.page || 1;
-    models.getAllQuestions(pid, count, page)
-      .then((result) => res.status(200).send(result))
+    models.getAllAnswers(question_id, count, page)
+      .then((result) => res.status(200).send(result[0]))
       .catch((err) => res.status(500).send('Cannot get all the questions'));
   },
   postAnswer: (req, res) => {
@@ -31,22 +34,22 @@ module.exports = {
       .catch((err) => res.status(500).send('Cannot add the answer'));
   },
   updateQuestionHelpfulness: (req, res) => {
-    models.updateQuestionHelpfulness(req.query)
+    models.updateQuestionHelpfulness(req.params)
       .then((result) => res.status(200).send('Helpfulness updated'))
       .catch((err) => res.status(500).send('Cannot update helpfulness'));
   },
   reportQuestion: (req, res) => {
-    models.reportQuestion(req.query)
+    models.reportQuestion(req.params)
       .then((result) => res.status(200).send('Question reported'))
       .catch((err) => res.status(500).send('Cannot report question'));
   },
   updateAnswerHelpfulness: (req, res) => {
-    models.updateAnswerHelpfulness(req.query)
+    models.updateAnswerHelpfulness(req.params)
       .then((result) => res.status(200).send('Helpfulness updated'))
       .catch((err) => res.status(500).send('Cannot update helpfulness'));
   },
   reportAnswer: (req, res) => {
-    models.reportAnswer(req.query)
+    models.reportAnswer(req.params)
       .then((result) => res.status(200).send('Answer reported'))
       .catch((err) => res.status(500).send('Cannot report answer'));
   },
