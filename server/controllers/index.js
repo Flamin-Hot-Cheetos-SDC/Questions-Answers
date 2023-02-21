@@ -2,7 +2,6 @@ const models = require('../models');
 
 module.exports = {
   getAllQuestions: (req, res) => {
-    console.log('inside controllers getAllQuestions', req.query);
     const pid = req.query.product_id;
     const count = req.query.count || 5;
     const page = req.query.page || 1;
@@ -20,7 +19,6 @@ module.exports = {
       });
   },
   getAllAnswers: (req, res) => {
-    console.log('inside controllers getAllAnswers', req.params);
     const question_id = req.params.question_id;
     const count = req.query.count || 5;
     const page = req.query.page || 1;
