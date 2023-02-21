@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const CounterSchema = mongoose.Schema({
+  _id: { type: String, required: true},
+  seq: { type: Number}
+});
+
+const counter = mongoose.model('counter', CounterSchema);
+
 const questionSchema = mongoose.Schema({
   product_id: {
     type: Number,
@@ -8,7 +15,6 @@ const questionSchema = mongoose.Schema({
   question_id: {
     type: Number,
     unique: true,
-    required: true
   },
   question_body: {
     type: String,
@@ -17,7 +23,7 @@ const questionSchema = mongoose.Schema({
     maxlength: 1000,
   },
   question_date: {
-    type: Date,
+    type: Number,
     default: Date.now,
   },
   asker_name: {
@@ -32,7 +38,7 @@ const questionSchema = mongoose.Schema({
     maxlength: 60,
     required: true,
   },
-  helpfulness: { type: Number, default: 0 },
+  question_helpfulness: { type: Number, default: 0 },
   reported: { type: Boolean, default: false },
   answers: [
     {
@@ -42,11 +48,22 @@ const questionSchema = mongoose.Schema({
   ],
 });
 
+// insert document into counters with _id: 'questionId' and seq: 3518963 (last value of question_id in csv), so that when the next document is inserted, its id will be incremented last value
+questionSchema.pre('save', function(next) {
+  var doc = this;
+  counter.findByIdAndUpdate({_id: 'questionId'}, {$inc: { seq: 1} }, {new: true, upsert: true}, function(error, counter) {
+      if(error) {
+        return next(error);
+      }
+      doc.question_id = counter.seq;
+      next();
+  });
+});
+
 const answerSchema = mongoose.Schema({
   answer_id: {
     type: Number,
     unique: true,
-    required: true
   },
   question_id: {
     type: Number,
@@ -89,6 +106,18 @@ const answerSchema = mongoose.Schema({
       },
     },
   ],
+});
+
+// insert document into counters with _id: 'answerId' and seq: 6879306 (last value of answer_id in csv), so that when the next document is inserted, its id will be incremented last value
+answerSchema.pre('save', function(next) {
+  var doc = this;
+  counter.findByIdAndUpdate({_id: 'answerId'}, {$inc: { seq: 1} }, {new: true, upsert: true}, function(error, counter) {
+      if(error) {
+        return next(error);
+      }
+      doc.answer_id = counter.seq;
+      next();
+  });
 });
 
 const Question = mongoose.model('Question', questionSchema);
