@@ -1,5 +1,6 @@
 const models = require('../models');
 
+//TODO: add error handling to every function when incorrect, incomplete params are sent (400 status ?)
 module.exports = {
   getAllQuestions: (req, res) => {
     const pid = req.query.product_id;

@@ -48,14 +48,18 @@ const questionSchema = mongoose.Schema({
   ],
 });
 
-// insert document into counters with _id: 'questionId' and seq: 3518963 (last value of question_id in csv), so that when the next document is inserted, its id will be incremented last value
+// insert document into counters with _id: 'questionId' and seq: 3518963
+// (last value of question_id in csv), so that when the next document is
+// inserted, its id will be incremented last value
 questionSchema.pre('save', function(next) {
-  var doc = this;
-  counter.findByIdAndUpdate({_id: 'questionId'}, {$inc: { seq: 1} }, {new: true, upsert: true}, function(error, counter) {
+  var question = this;
+  counter.findByIdAndUpdate({_id: 'questionId'}, {$inc: { seq: 1} },
+    {new: true, upsert: true},
+    function(error, counter) {
       if(error) {
         return next(error);
       }
-      doc.question_id = counter.seq;
+      question.question_id = counter.seq;
       next();
   });
 });
@@ -108,14 +112,18 @@ const answerSchema = mongoose.Schema({
   ],
 });
 
-// insert document into counters with _id: 'answerId' and seq: 6879306 (last value of answer_id in csv), so that when the next document is inserted, its id will be incremented last value
+// insert document into counters with _id: 'answerId' and seq: 6879306 (last
+// value of answer_id in csv), so that when the next document is inserted, its
+// id will be incremented last value
 answerSchema.pre('save', function(next) {
-  var doc = this;
-  counter.findByIdAndUpdate({_id: 'answerId'}, {$inc: { seq: 1} }, {new: true, upsert: true}, function(error, counter) {
+  var answer = this;
+  counter.findByIdAndUpdate({_id: 'answerId'}, {$inc: { seq: 1} },
+    {new: true, upsert: true},
+    function(error, counter) {
       if(error) {
         return next(error);
       }
-      doc.answer_id = counter.seq;
+      answer.answer_id = counter.seq;
       next();
   });
 });

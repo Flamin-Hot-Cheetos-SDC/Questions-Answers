@@ -15,6 +15,7 @@ module.exports = {
     });
   },
   getAllAnswers: (question_id, count, page) => {
+    // TODO: create a separate file to store aggregations, import the required aggregation here ?
     return Answer.aggregate([ { $match: { question_id: Number(question_id), reported: false } }, { $sort: { answer_id: -1 } }, { $limit: Number(count) }, { $project: { "email": 0, "reported": 0, "question_id": 0, } }, { $group: { _id: Number(question_id), results: { $push: { "_id": "$_id", "answer_id": "$answer_id", "answerer_name": "$answerer_name", "body": "$body", "date": "$date", "helpfulness": "$helpfulness", "photos": "$photos" } } } }, { $set: { question: "$_id", page: Number(page), count: Number(count), } }, { $unset: "_id" } ], {allowDiskUse: true});
   },
   postAnswer: ({ body, name, email, photos, question_id }) => {
@@ -26,18 +27,22 @@ module.exports = {
       photos: photos,
       helpfulness: 0,
     });
-    //also need to add ref to that answer into corresponding question?
+    // maybe will have to add pre-save step to generate photo_ids if the photo array is not empty
+    // to save photos will need to use array.push or check out $push in aggregation
+    // also need to add ref to that answer into corresponding question?
   },
   updateQuestionHelpfulness: (params) => {
     return Question.findOneAndUpdate({ question_id: params.question_id } , {$inc: { 'question_helpfulness' : 1}});
   },
   reportQuestion: (params) => {
+    //need to test and see if the second argument needs to have a $set method attached to it
     return Question.findOneAndUpdate({ question_id: params.question_id } , {'report' : true });
   },
   updateAnswerHelpfulness: (params) => {
     return Answer.findOneAndUpdate({ answer_id: params.answer_id } , {$inc: { 'helpfulness' : 1}});
   },
   reportAnswer: (params) => {
+    //need to test and see if the second argument needs to have a $set method attached to it
     return Answer.findOneAndUpdate({ answer_id: params.answer_id } , {'report' : true });
   },
 };

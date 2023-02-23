@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const controller = require('./controllers');
 
+//TODO: add a route for incorrect urls that will bring the user to 404?
 router.get('/questions', controller.getAllQuestions);
 router.post('/questions', controller.postQuestion);
 
