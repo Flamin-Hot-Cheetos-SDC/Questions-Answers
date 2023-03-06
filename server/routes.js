@@ -1,17 +1,20 @@
+require('dotenv').config();
 const router = require('express').Router();
 const controller = require('./controllers');
 
 //TODO: add a route for incorrect urls that will bring the user to 404?
-router.get('/questions', controller.getAllQuestions);
-router.post('/questions', controller.postQuestion);
+router.get(`/${process.env.LOADER_IO}`, controller.loaderIo);
 
-router.get('/questions/:question_id/answers', controller.getAllAnswers);
-router.post('/questions/:question_id/answers', controller.postAnswer);
+router.get('/qa/questions', controller.getAllQuestions);
+router.post('/qa/questions', controller.postQuestion);
 
-router.put('/questions/:question_id/helpful', controller.updateQuestionHelpfulness);
-router.put('/questions/:question_id/report', controller.reportQuestion);
+router.get('/qa/questions/:question_id/answers', controller.getAllAnswers);
+router.post('/qa/questions/:question_id/answers', controller.postAnswer);
 
-router.put('/answers/:answer_id/helpful', controller.updateAnswerHelpfulness);
-router.put('/answers/:answer_id/report', controller.reportAnswer);
+router.put('/qa/questions/:question_id/helpful', controller.updateQuestionHelpfulness);
+router.put('/qa/questions/:question_id/report', controller.reportQuestion);
+
+router.put('/qa/answers/:answer_id/helpful', controller.updateAnswerHelpfulness);
+router.put('/qa/answers/:answer_id/report', controller.reportAnswer);
 
 module.exports = router;

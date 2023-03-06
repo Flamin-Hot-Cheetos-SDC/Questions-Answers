@@ -2,12 +2,20 @@ const { Question, Answer } = require('../db');
 
 module.exports = {
   getAllQuestions: (pid, count, page) => {
-    return Question.aggregate([ { $match: { product_id: Number(pid), reported: false } }, { $sort: { question_id: 1 } }, { $limit: Number(count) }, { $lookup: { "from": "answers", "let": { "q_id": "$question_id" }, "pipeline": [ { $match: { $expr: { "$eq": [ "$question_id", "$$q_id" ] }, reported: false } }, { "$project": { "email": 0, "reported": 0, "question_id": 0, } } ], "as": "answers" } }, { $addFields: { answers: { "$arrayToObject": { $map: { input: "$answers", in: { k: { $toString: "$$this.answer_id" }, v: "$$this" } } } } } }, { $group: { _id: "$product_id", results: { $push: { "_id": "$_id", "answers": "$answers", "asker_name": "$asker_name", "question_body": "$question_body", "question_date": "$question_date", "question_helpfulness": "$question_helpfulness", "question_id": "$question_id", "reported": "$reported" } } } }, { $set: { product_id: "$_id" } }, { $unset: "_id" }], {allowDiskUse: true});
+    return Question.aggregate([ { $match: { product_id: Number(pid), reported: false } }, { $sort: { question_id: 1 } }, { $limit: Number(count) }, { $lookup: { "from": "answers", "let": { "q_id": "$question_id" }, "pipeline": [ { $match: { $expr: { "$eq": [ "$question_id", "$$q_id" ] }, reported: false } }, { $project: { "email": 0, "reported": 0, "question_id": 0, } } ], "as": "answers" } }, { $addFields: { answers: { "$arrayToObject": { $map: { input: "$answers", in: { k: { $toString: "$$this.answer_id" }, v: "$$this" } } } } } }, { $group: { _id: "$product_id", results: { $push: { "_id": "$_id", "answers": "$answers", "asker_name": "$asker_name", "question_body": "$question_body", "question_date": "$question_date", "question_helpfulness": "$question_helpfulness", "question_id": "$question_id", "reported": "$reported" } } } }, { $set: { product_id: "$_id" } }, { $unset: "_id" }], {allowDiskUse: true});
   },
   postQuestion: (params) => {
     const { body, name, email, product_id } = params;
+    console.log('in models ', {
+      // product_id: Number(product_id),
+      product_id: params.product_id,
+      question_body: body,
+      asker_name: name,
+      email: email,
+      question_helpfulness: 0});
     return Question.create({
-      product_id: Number(product_id),
+      // product_id: Number(product_id),
+      product_id: product_id,
       question_body: body,
       asker_name: name,
       email: email,

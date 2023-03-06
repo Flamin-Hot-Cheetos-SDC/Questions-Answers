@@ -7,11 +7,13 @@ const router = require('./routes');
 const port = process.env.PORT;
 const uri = `${process.env.DB_HOST}/${process.env.DB_NAME}`;
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
+// var redisClient = require('redis').createClient;
+// var redis = redisClient(6379, 'localhost');
 
 /* MIDDLEWARE */
 app.use(morgan('dev'));
 app.use(express.json());
-app.use('/qa', router);
+app.use('/', router);
 
 const db = mongoose.connection;
 db.on('error', err => {

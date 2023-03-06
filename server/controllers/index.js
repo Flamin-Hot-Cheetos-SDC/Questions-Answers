@@ -1,7 +1,12 @@
+require("dotenv").config();
 const models = require('../models');
 
 //TODO: add error handling to every function when incorrect, incomplete params are sent (400 status ?)
 module.exports = {
+  loaderIo: (req, res) => {
+    res.send(process.env.LOADER_IO)
+   },
+
   getAllQuestions: (req, res) => {
     const pid = req.query.product_id;
     const count = req.query.count || 5;
